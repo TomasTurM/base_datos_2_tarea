@@ -63,11 +63,11 @@ GROUP BY s.store_id
 ;
 
 # 5)
-SELECT a.* FROM actor a
+SELECT a.*, COUNT(fa.film_id) AS films FROM actor a
 INNER JOIN film_actor fa ON fa.actor_id = a.actor_id
-WHERE a.actor_id IN (
-	SELECT actor_id FROM film_actor
-
+GROUP BY a.actor_id
+HAVING films >= ALL (
+	SELECT
 )
 
 SELECT MAX(COUNT(actor_id)) FROM film_actor fa
