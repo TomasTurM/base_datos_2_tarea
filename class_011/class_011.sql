@@ -25,6 +25,12 @@ LEFT OUTER JOIN inventory i ON f.film_id = i.film_id
 WHERE i.film_id IS NULL
 GROUP BY f.title
 ;
+# Respuesta Profe
+SELECT film.title
+FROM film
+WHERE film.film_id NOT IN (SELECT film_id
+FROM inventory)
+;
 
 # 2)
 SELECT f.title, i.inventory_id
@@ -70,4 +76,17 @@ HAVING films >= ALL (
 	SELECT
 )
 
-SELECT MAX(COUNT(actor_id)) FROM film_actor fa
+# Respuesta Profe
+SELECT actor.actor_id,
+actor.first_name,
+actor.last_name,
+COUNT(actor_id) AS film_count
+FROM actor
+INNER JOIN film_actor USING (actor_id)
+GROUP BY actor_id, actor.first_name, actor.last_name
+HAVING COUNT(actor_id) >= (SELECT COUNT(film_id)
+FROM film_actor
+GROUP BY actor_id
+ORDER BY 1 DESC
+LIMIT 1)
+ORDER BY film_count DESC
