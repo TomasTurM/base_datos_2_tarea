@@ -56,10 +56,40 @@ INNER JOIN city ci USING(city_id)
 INNER JOIN country co USING(country_id)
 ;
 
-# 2.
+# 2. (Preguntar si esta bien, da mil resultados)
 CREATE VIEW film_details AS
-	SELECT film id, title, description, category, price,
-	length, rating, GROUP_CONCAT(
-		SELECT CONCAT_WS(' ', a.first_name, a.last_name)
-		FROM 
-	)
+SELECT f.film_id, f.title, f.description, c.name, 
+f.replacement_cost, f.length, f.rating, (
+SELECT GROUP_CONCAT(	
+CONCAT_WS(' ', a.first_name, a.last_name)
+)
+FROM actor a
+INNER JOIN film_actor fa
+GROUP BY fa.film_id
+HAVING fa.film_id = f.film_id
+) AS actors
+FROM film f
+INNER JOIN film_category fa ON f.film_id = fa.film_id
+INNER JOIN category c ON fa.category_id = c.category_id
+;
+
+# 3.
+CREATE OR REPLACE VIEW sales_by_film_category AS
+	SELECT c.name AS category, SUM(p.amount) AS total_rental
+	FROM film f
+	INNER JOIN film_category fa ON f.film_id = fa.film_id
+	INNER JOIN category c ON fa.category_id = c.category_id
+	INNER JOIN inventory i ON f.film_id = i.film_id
+	INNER JOIN rental r ON i.inventory_id = r.inventory_id
+	INNER JOIN payment p ON r.rental_id = p.rental_id
+	GROUP BY c.name
+;
+
+# 4.
+CREATE OR REPLACE VIEW actor_information AS
+	SELECT a.actor_id, a.first_name, a.last_name,
+	COUNT(fa.film_id) AS featured_movies
+	FROM actor a
+	INNER JOIN film_actor fa ON a.actor_id = fa.actor_id
+	GROUP BY a.actor_id
+;
