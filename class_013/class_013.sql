@@ -56,20 +56,32 @@ VALUES
 	INNER JOIN country co ON co.country_id = ci.country_id
 	WHERE co.country = "United States"
 ), 1, CURDATE(), CURDATE()
-);
+)
+;
 
 # 2.
 INSERT INTO rental
-(inventory_id, rental_date, customer_id, return_date,
-satff_id, last_update)
+(inventory_id, customer_id, return_date,
+staff_id)
 VALUES
 ((
-	SELECT i.inventory_id FROM inventory i
-	INNER JOIN film f ON i.film_id = f.film_id
-	WHERE f.title = ""
-), '2018-05-25 12:12:12', (
-	SELECT c.customer_id FROM customer c
-	ORDER BY RAND()
-	LIMIT 1
-), 
-);
+SELECT i.inventory_id FROM inventory i
+INNER JOIN film f ON i.film_id = f.film_id
+WHERE f.title = "ADAPTATION HOLES"
+LIMIT 1
+), (
+SELECT c.customer_id FROM customer c
+ORDER BY RAND()
+LIMIT 1
+), '2018-06-12 12:12:12',
+(
+SELECT staff_id FROM staff
+WHERE store_id = 2
+ORDER BY RAND()
+LIMIT 1
+)
+)
+;
+
+# 3.
+UPDATE film

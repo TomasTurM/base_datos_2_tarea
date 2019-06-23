@@ -60,3 +60,25 @@ INNER JOIN film_actor fa USING(film_id)
 INNER JOIN actor a USING(actor_id)
 WHERE CONCAT(a.first_name, a.last_name) = REPLACE(UPPER("Thora Temple"), " ", "")
 ;
+
+# 4.
+SELECT rmj.title, rmj.first_name, 
+CASE
+	WHEN rmj.return_date IS NOT NULL THEN "YES"
+	WHEN rmj.return_date IS NULL THEN "NO"
+	ELSE "DUNNO"
+END
+FROM (
+	SELECT f.title, c.first_name, r.return_date
+	FROM film f
+	INNER JOIN inventory USING(film_id)
+	INNER JOIN rental r USING(inventory_id)
+	INNER JOIN customer c USING(customer_id)
+	WHERE MONTH(r.rental_date) IN (5, 6)
+) AS rmj
+;
+
+# 5
+
+
+# 6
