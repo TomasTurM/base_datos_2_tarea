@@ -69,3 +69,25 @@ WHERE last_name LIKE 'T%';
 # La columna last_name tiene un index
 
 # 3.
+# LIKE en la tabla film
+SELECT description FROM film
+WHERE description LIKE '%Discover%'
+# 48 results
+# Duration: 0.00889175
+
+SELECT description FROM film
+WHERE description LIKE '%Discover%'
+AND description LIKE '%Amazing%';
+# 7 results
+# Duration: 0.01146000
+
+# MATCH en la tabla film_text
+SELECT description FROM film_text
+WHERE MATCH(title, description) AGAINST('Discover');
+# 48 results
+# Duration: 0.00304600
+
+SELECT description FROM film_text
+WHERE MATCH(title, description) AGAINST('Discover,Amazing');
+# 89 results
+# Duration: 0.00449925
