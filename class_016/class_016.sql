@@ -14,7 +14,7 @@
 #
 #    Explain this case also.
 
-# 3. Add a age column to the table employee where and it 
+# 3. Add an age column to the table employee where and it 
 #    can only accept values from 16 up to 70 years old.
 
 # 4. Describe the referential integrity between tables film, 
@@ -49,7 +49,63 @@ VALUES
 # First query
 UPDATE employees SET employeeNumber = employeeNumber - 20;
 # Explanation
-
+#   This query updated the employeeNumber of all registries of
+#   the table employees, by substracting 20 to their values
 # Second query
-UPDATE employees SET employeeNumber = employeeNumber + 20
+UPDATE employees SET employeeNumber = employeeNumber + 20;
 # Explanation
+#   This query tries to add 20 to the employeeNumber of all
+#   regitries of the table employees, but MySQL returns 
+#   Error 1062: Duplicate entry for key 'PRIMARY' because,
+#   despite being changed in the previous query, employeeNumber
+#   was created as a Primary Key and each value inserted in
+#   that field cannot be repeated
+
+# 3. (No funciona, preguntar profe)
+ALTER TABLE employees
+ADD age int(2) NOT NULL
+;
+
+ALTER TABLE employees
+ADD CONSTRAINT ageCheckConstraint CHECK(age > 16 AND age < 70)
+;
+
+# ALTER TABLE employees
+# ADD CONSTRAINT ageCheckConstraint70 CHECK(age <= 70)
+# ;
+
+insert  into `employees`(`employeeNumber`,`lastName`,`firstName`,`extension`,`email`,`officeCode`,`reportsTo`,`jobTitle`,`age`) values 
+(1003,'Murphi','Diano','x5801','mmurphy@classicmodelcars.com','1',NULL,'Presidente',15);
+
+# 4.
+# No entiendo la pregunta
+
+# 5.
+ALTER TABLE employees
+ADD lastUpdate DATETIME
+;
+
+ALTER TABLE employees
+ADD lastUpdateUser VARCHAR(45)
+;
+
+DELIMITER $$
+CREATE TRIGGER before_employees_insert
+    BEFORE INSERT ON employees
+    FOR EACH ROW
+BEGIN    
+    SET NEW.lastUpdate = NOW(),
+    NEW.lastUpdateUser = USER();
+END$$
+
+DELIMITER $$
+CREATE TRIGGER before_employees_update
+    BEFORE UPDATE ON employees
+    FOR EACH ROW
+BEGIN    
+    SET NEW.lastUpdate = NOW(),
+    NEW.lastUpdateUser = USER();
+END$$
+
+# 6.
+# No aparece nada

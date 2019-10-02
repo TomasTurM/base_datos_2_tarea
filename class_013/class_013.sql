@@ -85,3 +85,54 @@ LIMIT 1
 
 # 3.
 UPDATE film
+SET release_year = 2001
+WHERE rating = 'G'
+;
+
+# 4.
+SELECT f1.* FROM film f1
+WHERE film_id = (
+	SELECT f2.film_id FROM film f2
+	INNER JOIN inventory i 
+	ON f2.film_id = i.film_id
+	INNER JOIN rental r 
+	ON i.inventory_id = r.inventory_id
+	WHERE r.return_date IS NULL
+	ORDER BY r.rental_date DESC
+	LIMIT 1
+)
+;
+
+# 5.
+DELETE FROM film WHERE title = 'SHINING ROSES';
+# Explanation
+# 	The query couldnt delete the film because it has a 
+# 	foreign key constraint with the table film_actor
+
+# Delete a film entirely (Falta)
+DELETE FROM film_actor
+WHERE film_id = (
+	SELECT f.film_id FROM film f
+	WHERE title = 'SHINING ROSES'
+)
+;
+DELETE FROM film_category
+WHERE film_id = (
+	SELECT f.film_id FROM film f
+	WHERE title = 'SHINING ROSES'
+)
+;
+DELETE FROM payment
+WHERE film_id = (
+	SELECT f.film_id FROM film f
+	WHERE title = 'SHINING ROSES'
+)
+;
+DELETE FROM inventory
+WHERE film_id = (
+	SELECT f.film_id FROM film f
+	WHERE title = 'SHINING ROSES'
+)
+;
+
+# 6. (Preguntar como hacerlo)
